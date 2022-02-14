@@ -5,9 +5,9 @@
 #include <map>
 using namespace std;
 
-enum Months { JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC };
-const map<string, Months> monthEnum{ {"JAN", JAN}, {"FEB", FEB}, {"MAR", MAR}, {"APR", APR}, {"MAY", MAY}, {"JUN", JUN},
-    {"JUL", JUL}, {"AUG", AUG}, {"SEP", SEP}, {"OCT", OCT}, {"NOV", NOV}, {"DEC", DEC} };
+enum class Months { JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC };
+const map<string, Months> monthEnum{ {"JAN", Months::JAN}, {"FEB", Months::FEB}, {"MAR", Months::MAR}, {"APR", Months::APR}, {"MAY", Months::MAY}, 
+    {"JUN", Months::JUN}, {"JUL", Months::JUL}, {"AUG", Months::AUG}, {"SEP", Months::SEP}, {"OCT", Months::OCT}, {"NOV",Months::NOV}, {"DEC", Months::DEC} };
 const regex regexpr(R"((?:^|\s)(([1-9]|[1-2][0-9]|[3][0-1])\ (JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)\ (\d{2}))(?:$|\s))");
 
 class Date {
@@ -22,15 +22,15 @@ public:
 
     bool isValid() {
         switch (m_month) {
-        case FEB:
+        case Months::FEB:
             if (m_year != 0 && m_year % 4 == 0) {
                 return m_date < 30;
             }
             else { return m_date < 29; }
-        case APR:
-        case JUN:
-        case SEP:
-        case NOV:
+        case Months::APR:
+        case Months::JUN:
+        case Months::SEP:
+        case Months::NOV:
             return m_date < 31;
         }
         return true;
@@ -103,8 +103,9 @@ void doJob(string fileName) {
             Date date = Date(res[1], stoi(res[2]), monthEnum.find(res[3])->second, stoi(res[4]));
             if (date.isValid()) {
                 dates.push_back(date);
-            }
-            a = res.suffix();
+            }          
+            int pos = res.prefix().length();
+            a = a.substr(pos + 2);
         }
     }
 
